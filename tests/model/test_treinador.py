@@ -15,7 +15,7 @@ sys.path.append(str(BASE_DIR / "src"))
 
 from src.bert.treinador import preprocess_text, ContractDataset, treinar_modelo_bert
 
-TEST_JSON_PATH = BASE_DIR / "data" / "contratos_teste.json"
+TEST_JSON_PATH = BASE_DIR / "data" / "contrato_teste.json"
 
 class TestTreinador(unittest.TestCase):
     @classmethod

@@ -11,9 +11,17 @@ MODEL_PATH = BASE_DIR / "model" / "modelo_bert.pkl"
 BERT_NAME = "neuralmind/bert-base-portuguese-cased"
 RB_MODE = "rb"
 
-# Inicializa tokenizer e modelo BERT
-bert_tokenizer = BertTokenizer.from_pretrained(BERT_NAME)
-bert_model = BertModel.from_pretrained(BERT_NAME)
+# Variáveis globais para armazenar tokenizer e modelo (inicializadas como None)
+bert_tokenizer = None
+bert_model = None
+
+# Função para inicializar tokenizer e modelo sob demanda
+def initialize_bert():
+    global bert_tokenizer, bert_model
+    if bert_tokenizer is None or bert_model is None:
+        bert_tokenizer = BertTokenizer.from_pretrained(BERT_NAME)
+        bert_model = BertModel.from_pretrained(BERT_NAME)
+    return bert_tokenizer, bert_model
 
 # Função para pré-processar texto
 def preprocess_text(text):
@@ -30,19 +38,20 @@ def dividir_em_trechos(texto, tamanho=100):
 # Função para gerar embeddings com BERT
 @torch.no_grad()
 def gerar_embedding(texto, max_length=512):
+    tokenizer, model = initialize_bert()
     texto = preprocess_text(texto)
     trechos = dividir_em_trechos(texto)
     embeddings = []
 
     for trecho in trechos:
-        inputs = bert_tokenizer(
+        inputs = tokenizer(
             trecho,
             return_tensors='pt',
             truncation=True,
             padding=True,
             max_length=max_length
         )
-        outputs = bert_model(**inputs)
+        outputs = model(**inputs)
         embedding = outputs.last_hidden_state[:, 0, :].squeeze()  # [CLS] token
         # Verificar se é um tensor e converter para numpy
         if isinstance(embedding, torch.Tensor):
@@ -53,7 +62,7 @@ def gerar_embedding(texto, max_length=512):
     if embeddings:
         return np.mean(embeddings, axis=0)
     else:
-        return np.zeros(bert_model.config.hidden_size if hasattr(bert_model.config, 'hidden_size') else 768)
+        return np.zeros(model.config.hidden_size if hasattr(model.config, 'hidden_size') else 768)
 
 # Carregar modelo salvo
 def carregar_modelo_bert():

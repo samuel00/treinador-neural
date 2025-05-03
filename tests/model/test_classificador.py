@@ -44,10 +44,9 @@ class TestClassificador(unittest.TestCase):
         # Testar texto vazio
         self.assertEqual(dividir_em_trechos(""), [])
 
-    @patch('src.bert.classificador.bert_tokenizer')
-    @patch('src.bert.classificador.bert_model')
+    @patch('src.bert.classificador.BertTokenizer')
+    @patch('src.bert.classificador.BertModel')
     def test_gerar_embedding(self, mock_bert, mock_tokenizer):
-
         # Configurar mock do tokenizer
         mock_tokenizer_instance = Mock()
         mock_tokenizer.from_pretrained.return_value = mock_tokenizer_instance
@@ -68,10 +67,15 @@ class TestClassificador(unittest.TestCase):
         embedding = gerar_embedding("texto de teste")
 
         # Depuração
-        print(f"Embedding shape: {embedding.shape}, Embedding: {embedding}")
+        print(f"Embedding shape: {embedding.shape}, Embedding: {embedding[:5]}")
 
         # Verificar o resultado
-        self.assertEqual(embedding.shape, (0,))  # Verifica se o embedding tem 0 dimensões
+        self.assertEqual(embedding.shape, (768,))  # Forma correta do embedding
+        self.assertTrue(np.all(embedding == 0))  # Verifica se todos os valores são zero
+
+        # Verificar chamadas aos mocks
+        mock_tokenizer.from_pretrained.assert_called_once_with("neuralmind/bert-base-portuguese-cased")
+        mock_bert.from_pretrained.assert_called_once_with("neuralmind/bert-base-portuguese-cased")
 
     @patch('src.bert.classificador.BertTokenizer')
     @patch('src.bert.classificador.BertModel')
