@@ -1,2 +1,4 @@
 /venv
 /.idea
+*/bert/model/bert_finetuned/
+*/model/bert_finetuned/
