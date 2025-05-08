@@ -312,11 +312,11 @@ def gerar_outro():
 # Gerar dataset
 dataset = []
 # 1000 exemplos de rótulo 1
-for _ in range(2500):
+for _ in range(1000):
     dataset.append(gerar_cessao())
 
 # 1000 exemplos de rótulo 0 (distribuídos uniformemente entre os 6 tipos)
-num_samples_per_type = 2500 // 6  # ~166 exemplos por tipo
+num_samples_per_type = 1000 // 6  # ~166 exemplos por tipo
 for tipo in ["financiamento", "venda_criptomoedas", "compra_acoes", "leasing_automovel", "confidencialidade", "contrato_trabalho"]:
     for _ in range(num_samples_per_type):
         dataset.append(gerar_outro())
