@@ -4,6 +4,10 @@
 pip freeze > requirements.txt
 pip install -r requirements.txt
 
+sha256sum data/contratos_cessao_5000.json
+Get-FileHash data\contratos_cessao_5000.json -Algorithm SHA256
+pip show torch transformers onnxruntime pandas  
+
 
 
 
